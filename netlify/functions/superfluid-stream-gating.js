@@ -46,6 +46,10 @@ function generateJwtToken(sender, receiver, token, apiKey) {
 }
 
 exports.handler = async (event, context) => {
+  if (event.httpMethod !== "POST") return {
+    statusCode: 405,
+    body: JSON.stringify({ code: 'Method Not Allowed', message: 'Only POST requests are allowed' })
+  };
   const apiKey = event.headers['x-api-key'];
   console.log("apikey:", apiKey);
   console.log(event.body);
