@@ -5,7 +5,7 @@ export const handler = async () => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Hello World! The time is ${date}`
+      message: `Hello World! The date is ${date}`
     })
   };
 };

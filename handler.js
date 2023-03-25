@@ -76,7 +76,7 @@ exports.handler = async (event, context) => {
   if (streams.length > 0) {
     const jwtToken = generateJwtToken(sender, receiver, token, apiKey);
 
-    // // 307 redirect to protected page get request with token
+    // // 307 redirect to protected page with token
     // return {
     //   statusCode: 307,
     //   headers: {
