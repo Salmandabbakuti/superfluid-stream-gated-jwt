@@ -67,25 +67,25 @@ exports.handler = async (event, context) => {
 
   const { sender, receiver, token } = body;
   const streams = await getStreams(sender, receiver, token);
-  console.log({ streams });
+  console.log("streams:", streams);
 
   if (streams.length > 0) {
     const jwtToken = generateJwtToken(sender, receiver, token, apiKey);
 
-    // 307 redirect to protected page get request with token
-    return {
-      statusCode: 307,
-      headers: {
-        Location: `${appUrl}?token=${jwtToken}`
-      },
-      body: JSON.stringify({ code: 'Success', message: 'Authorized. Redirecting to protected page' })
-    };
+    // // 307 redirect to protected page get request with token
+    // return {
+    //   statusCode: 307,
+    //   headers: {
+    //     Location: `${appUrl}?token=${jwtToken}`
+    //   },
+    //   body: JSON.stringify({ code: 'Success', message: 'Authorized. Redirecting to protected page' })
+    // };
 
     // or just return the token and redirectUrl
-    // return {
-    //   statusCode: 200,
-    //   body: JSON.stringify({ token: jwtToken, redirectUrl: `${appUrl}?token=${jwtToken}` })
-    // };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ token: jwtToken, redirectUrl: `${appUrl}?token=${jwtToken}` })
+    };
   }
 
   return {
