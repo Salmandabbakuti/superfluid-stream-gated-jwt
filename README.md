@@ -63,7 +63,7 @@ Here is an example curl command for making a request:
 ```bash
 curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/superfluid-stream-gating \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: 123' \
+  -H 'x-api-key: zaLcG9' \
   -d '{
     "sender": "0x123456789...",
     "receiver": "0x987654321...",
