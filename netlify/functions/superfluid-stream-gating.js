@@ -1,7 +1,7 @@
 const { request, gql } = require("graphql-request");
 const jwt = require("jsonwebtoken");
 
-const whitelistedApiKeys = ["123", "456", "789"];
+const whitelistedApiKeys = process.env.WHITELISTED_API_KEYS ? process.env.WHITELISTED_API_KEYS.split(",") : [];
 const secret = process.env.JWT_SECRET;
 const subgraphUrl = process.env.SUBGRAPH_URL;
 const appUrl = process.env.APP_URL;
