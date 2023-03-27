@@ -48,7 +48,7 @@ netlify deploy
 
 ## Usage
 
-To use the Superfluid Stream Gating function, you need to make a POST request to the deployed function endpoint with the following parameters in the request body:
+To use the Superfluid Stream Gating function [`superfluid-stream-gating.js`](netlify/functions/superfluid-stream-gating.js), you need to make a POST request to the deployed function endpoint with the following parameters in the request body:
 
 `sender`: the Ethereum address of the sender of the stream
 
@@ -58,6 +58,8 @@ To use the Superfluid Stream Gating function, you need to make a POST request to
 
 `x-api-key`: the API key in the request header
 
+> Note: This project uses the [Superfluid Subgraph of goerli](https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-goerli) contract to verify the existence of the stream before authenticating access. You can use subgraph of any other network by changing the `SUBGRAPH_URL` in the `.env` file.
+
 Here is an example curl command for making a request:
 
 ```bash
@@ -65,9 +67,9 @@ curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/sup
   -H 'Content-Type: application/json' \
   -H 'x-api-key: zaLcG9' \
   -d '{
-    "sender": "0x123456789...",
-    "receiver": "0x987654321...",
-    "token": "0xabcde12345..."
+    "sender": "0xc2009d705d37a9341d6cd21439cf6b4780eaf2d7",
+    "receiver": "0xc7203561ef179333005a9b81215092413ab86ae9",
+    "token": "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
   }'
 
 ```
