@@ -9,8 +9,22 @@
 </head>
 
 <body>
-  <h1 style="text-align: center;">Superfluid Stream Gating</h1>
-  <h3 style="text-align: center;">You are authorized because a stream is present to authorize this page</h3>
+  <h1 style="text-align: center">Superfluid Stream Gating</h1>
+  <div style="text-align: center" id="res">You are not authorized to view this page. Since you do not have a stream to
+    authorize this page</div>
+  <script>
+    // check if token is present in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    // if token is present, then authorize the page
+    // you can also add further checks here to verify the token
+    // for now we are just checking if token is present and then showing page content
+    if (token) {
+      document.getElementById("res").innerHTML = `
+      <h2>Voila 🎉🎉🥳🎉🎉</h2>
+      <p>You are authorized because a stream is present to authorize this page</p>`;
+    }
+  </script>
 </body>
 
 </html>

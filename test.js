@@ -29,9 +29,10 @@ const main = async ({ apiKey, sender, receiver, token }) => {
   if (apiKeys.includes(apiKey)) {
     // check if stream exists using superfluid subgraph with given params and then create jwt token
     const { streams } = await request({
-      url: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
+      url: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
       document: STREAMS_QUERY,
       variables: {
+        first: 1,
         where: {
           sender,
           receiver,
@@ -43,13 +44,13 @@ const main = async ({ apiKey, sender, receiver, token }) => {
     if (streams.length > 0) {
       console.log({ status: 200, message: "Success" });
       // create jwt token
-      const createdAt = new Date().getTime();
       const jwtToken = jwt.sign(
-        { sender, receiver, token, apiKey, createdAt },
+        { sender, receiver, token },
         secret,
         { expiresIn: "1h" }
       );
-      console.log({ status: 200, token: jwtToken });
+      const decoded = jwt.verify(jwtToken, secret);
+      console.log({ status: 200, token: jwtToken, decoded });
     } else {
       console.log({ status: 404, message: "Stream not found" });
     }
@@ -60,7 +61,7 @@ const main = async ({ apiKey, sender, receiver, token }) => {
 
 main({
   apiKey: "123",
-  sender: "0x00008cca528fee04c6a94a0011e7857d471ba3e0",
-  receiver: "0x48c5a279c75c3482d2196a12c40a1c8155debe47",
-  token: "0x42bb40bf79730451b11f6de1cba222f17b87afd7"
+  sender: "0xc2009d705d37a9341d6cd21439cf6b4780eaf2d7",
+  receiver: "0xc7203561ef179333005a9b81215092413ab86ae9",
+  token: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
 });

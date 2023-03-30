@@ -18,8 +18,8 @@ const isRequestBodyValid = (body) =>
 // Retrieve streams using the Superfluid subgraph
 async function getStreams(sender, receiver, token) {
   const STREAMS_QUERY = gql`
-    query GetStreams($where: Stream_filter!) {
-      streams(where: $where) {
+    query GetStreams($first: Int, $where: Stream_filter!) {
+      streams(first: $first, where: $where) {
         id
       }
     }
@@ -28,6 +28,7 @@ async function getStreams(sender, receiver, token) {
     url: subgraphUrl,
     document: STREAMS_QUERY,
     variables: {
+      first: 1,
       where: {
         sender,
         receiver,
@@ -39,9 +40,8 @@ async function getStreams(sender, receiver, token) {
 }
 
 // Generate a JWT token with an expiration time of 1 hour
-function generateJwtToken(sender, receiver, token, apiKey) {
-  const createdAt = new Date().getTime();
-  return jwt.sign({ sender, receiver, token, apiKey, createdAt }, secret, {
+function generateJwtToken(sender, receiver, token) {
+  return jwt.sign({ sender, receiver, token }, secret, {
     expiresIn: "1h"
   });
 }
@@ -77,7 +77,7 @@ exports.handler = async (event) => {
 
   const { sender, receiver, token } = body;
   const streams = await getStreams(sender, receiver, token);
-  if (streams.length === 0)
+  if (!streams || streams.length === 0)
     return {
       statusCode: 401,
       body: JSON.stringify({
@@ -87,18 +87,16 @@ exports.handler = async (event) => {
     };
 
   // Generate JWT token if stream exists
-  const jwtToken = generateJwtToken(sender, receiver, token, apiKey);
+  const jwtToken = generateJwtToken(sender, receiver, token);
 
   // 307 redirect to protected page with token
+  // event.httpMethod = "GET";
   // return {
   //   statusCode: 307,
   //   headers: {
   //     Location: `${appUrl}?token=${jwtToken}`
   //   },
-  //   body: JSON.stringify({
-  //     code: "Success",
-  //     message: "Authorized. Redirecting to protected page"
-  //   })
+  //   body: ""
   // };
 
   // or just return the token and redirectUrl
