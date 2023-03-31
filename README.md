@@ -9,7 +9,7 @@ Streamline your content access with Superfluid Stream Gating.
 ### Solution Overview:
 
 This project tried to implement superfluid streams gating mechanism as mentioned in the problem statement by providing a serverless function that generates JWTs on-demand for authorized users.
-This function is built using the Netlify/AWS Lambda serverless architecture and is written in Node.js. It requires a list of authorized API keys and a secret key to generate JWT tokens. When a user sends a request to the function with a valid API key, it uses the Superfluid protocol subgraph to check if a stream exists for the specified sender, receiver, and token. If a stream exists, it generates a JWT token using the secret key and either returns the token and redirect URL or redirects the user to the protected resource with the token appended as a query parameter.
+This function is built using the Netlify/AWS Lambda serverless architecture and is written in Node.js. It requires a list of authorized API keys and a secret key to generate JWT tokens. When a user sends a request to the function with a valid API key, it uses the Superfluid protocol subgraph to check if a stream exists for the specified sender, receiver, and token. If a stream exists with active flow rate, it generates a JWT token using the secret key and either returns the token and redirect URL or redirects the user to the protected resource with the token appended as a query parameter.
 
 ## Getting Started
 
@@ -67,8 +67,8 @@ curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/sup
   -H 'Content-Type: application/json' \
   -H 'x-api-key: zaLcG9' \
   -d '{
-    "sender": "0xc2009d705d37a9341d6cd21439cf6b4780eaf2d7",
-    "receiver": "0xc7203561ef179333005a9b81215092413ab86ae9",
+    "sender": "0xc7203561ef179333005a9b81215092413ab86ae9",
+    "receiver": "0x7348943c8d263ea253c0541656c36b88becd77b9",
     "token": "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
   }'
 

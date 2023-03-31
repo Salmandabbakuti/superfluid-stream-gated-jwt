@@ -32,7 +32,8 @@ async function getStreams(sender, receiver, token) {
       where: {
         sender,
         receiver,
-        token
+        token,
+        currentFlowRate_gt: 0
       }
     }
   });

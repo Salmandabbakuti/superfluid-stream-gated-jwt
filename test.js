@@ -36,7 +36,8 @@ const main = async ({ apiKey, sender, receiver, token }) => {
         where: {
           sender,
           receiver,
-          token
+          token,
+          currentFlowRate_gt: 0
         }
       }
     });
@@ -61,7 +62,7 @@ const main = async ({ apiKey, sender, receiver, token }) => {
 
 main({
   apiKey: "123",
-  sender: "0xc2009d705d37a9341d6cd21439cf6b4780eaf2d7",
-  receiver: "0xc7203561ef179333005a9b81215092413ab86ae9",
+  sender: "0xc7203561ef179333005a9b81215092413ab86ae9",
+  receiver: "0x7348943c8d263ea253c0541656c36b88becd77b9",
   token: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
 });
