@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test.js --exit"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +14,9 @@
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
   }
 }
