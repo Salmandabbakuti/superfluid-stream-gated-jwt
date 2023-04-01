@@ -11,23 +11,15 @@ Streamline your content access with Superfluid Stream Gating.
 This project tried to implement superfluid streams gating mechanism as mentioned in the problem statement by providing a serverless function that generates JWTs on-demand for authorized users.
 This function is built using the Netlify/AWS Lambda serverless architecture and is written in Node.js. It requires a list of authorized API keys and a secret key to generate JWT tokens. When a user sends a request to the function with a valid API key, it uses the Superfluid protocol subgraph to check if a stream exists for the specified sender, receiver, and token. If a stream exists with active flow rate, it generates a JWT token using the secret key and either returns the token and redirect URL or redirects the user to the protected resource with the token appended as a query parameter.
 
-## Getting Started
+## Deployment
 
-To deploy the Superfluid Stream Gating serverless function, you need to have a Netlify account and the Netlify CLI installed. Follow these steps to deploy the function:
+To deploy the Superfluid Stream Gating serverless function, you need to have a Netlify account. Follow these steps to deploy the function:
 
-1. Clone the repository to your local machine:
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Salmandabbakuti/superfluid-stream-gated-jwt#JWT_SECRET=somesupersecret&SUBGRAPH_URL=https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli&WHITELISTED_API_KEYS=api_key_1,api_key_2,api_key_3&APP_URL=https://superfluid-stream-gating.netlify.app/)
 
-```bash
-git clone https://github.com/your-username/superfluid-stream-gating.git
-```
+Click the button above to deploy the function to your Netlify account. Follow the instructions to deploy your function.
 
-2. Install the dependencies:
-
-```bash
-npm install
-```
-
-3. Rename the `.env.example` file to `.env` and add your Superfluid Protocol Subgraph URL and the JWT secret key.
+Once the function is deployed, you need to update the following environment variables. You can do this by going to the `Site settings` tab of your Netlify site and clicking on `Environment Variables` > Select a variable > `Options` > `Edit`.
 
 ```
 JWT_SECRET=
@@ -36,15 +28,7 @@ SUBGRAPH_URL=
 WHITELISTED_API_KEYS=api_key_1,api_key_2,api_key_3
 ```
 
-Replace `api_key_1,api_key_2,api_key_3` with your desired API keys,
-
-4. Deploy the function to Netlify:
-
-```bash
-netlify deploy
-```
-
-5. Follow the prompts to deploy the function to your Netlify account.
+After updating the environment variables, you can access the function endpoint by going to the `Functions` tab of your Netlify site and clicking on the `superfluid-stream-gating` function.
 
 ## Usage
 
