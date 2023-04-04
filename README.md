@@ -63,9 +63,9 @@ curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/sup
 
 ## Roadmap:
 
-[] Create a standalone npm package for the Superfluid stream gating function with in-built token verfication functionality.
-[] Add more example integrations with various app frameworks such as React, Nextjs, Nodejs(Server-side).
-[] Add support for more Ethereum networks and improve error handling
+- [ ] Create a standalone npm package for the Superfluid stream gating function with in-built token verfication functionality.
+- [ ] Add more example integrations with various app frameworks such as React, Nextjs, Nodejs(Server-side).
+- [ ] Add support for more Ethereum networks and improve error handling
 
 ## Credits & Resources:
 
