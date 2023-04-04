@@ -5,7 +5,12 @@
   publish = "public"
 
 [functions]
-  node_bundler = "esbuild" 
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.

@@ -40,9 +40,11 @@ To use the Superfluid Stream Gating function [`superfluid-stream-gating.js`](net
 
 `token`: the Ethereum address of the token being streamed
 
+`chain` (optional): The Ethereum network where the stream is taking place. Defaults to goerli if not provided. Possible values: `goerli`, `mumbai`, `matic`
+
 `x-api-key`: the API key in the request header
 
-> Note: This project uses the [Superfluid Subgraph of goerli](https://thegraph.com/hosted-service/subgraph/superfluid-finance/protocol-v1-goerli) contract to verify the existence of the stream before authenticating access. You can use subgraph of any other network by changing the `SUBGRAPH_URL` in the `.env` file.
+> Note: This project uses subgraph to verify the existence of the stream before authenticating access. You can specify `chain` in request body to use the subgraph of the specified chain. The supported chains are `goerli`, `mumbai`, `matic`. If no `chain` is specified, the function will use the `goerli` subgraph by default.
 
 Here is an example curl command for making a request:
 
@@ -51,12 +53,19 @@ curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/sup
   -H 'Content-Type: application/json' \
   -H 'x-api-key: zaLcG9' \
   -d '{
+    "chain": "goerli",
     "sender": "0xc7203561ef179333005a9b81215092413ab86ae9",
     "receiver": "0x7348943c8d263ea253c0541656c36b88becd77b9",
     "token": "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
   }'
 
 ```
+
+## Roadmap:
+
+[] Create a standalone npm package for the Superfluid stream gating function with in-built token verfication functionality.
+[] Add more example integrations with various app frameworks such as React, Nextjs, Nodejs(Server-side).
+[] Add support for more Ethereum networks and improve error handling
 
 ## Credits & Resources:
 

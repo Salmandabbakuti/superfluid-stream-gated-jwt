@@ -5,8 +5,13 @@ const whitelistedApiKeys = process.env.WHITELISTED_API_KEYS
   ? process.env.WHITELISTED_API_KEYS.split(",")
   : [];
 const secret = process.env.JWT_SECRET;
-const subgraphUrl = process.env.SUBGRAPH_URL;
 const appUrl = process.env.APP_URL;
+
+const subgraphUrls = {
+  "goerli": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
+  "mumbai": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
+  "matic": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-matic"
+};
 
 // Check if the API key is authorized
 const isApiKeyAuthorized = (apiKey) => whitelistedApiKeys.includes(apiKey);
@@ -16,7 +21,7 @@ const isRequestBodyValid = (body) =>
   ["sender", "receiver", "token"].every((param) => body.hasOwnProperty(param));
 
 // Retrieve streams using the Superfluid subgraph
-async function getStreams(sender, receiver, token) {
+async function getStreams({ chain, sender, receiver, token }) {
   const STREAMS_QUERY = gql`
     query GetStreams($first: Int, $where: Stream_filter!) {
       streams(first: $first, where: $where) {
@@ -24,6 +29,8 @@ async function getStreams(sender, receiver, token) {
       }
     }
   `;
+  // Get the subgraph URL based on the chain or fallback to goerli
+  const subgraphUrl = subgraphUrls[chain] || subgraphUrls["goerli"];
   const { streams } = await request({
     url: subgraphUrl,
     document: STREAMS_QUERY,
@@ -41,8 +48,8 @@ async function getStreams(sender, receiver, token) {
 }
 
 // Generate a JWT token with an expiration time of 1 hour
-function generateJwtToken(sender, receiver, token) {
-  return jwt.sign({ sender, receiver, token }, secret, {
+function generateJwtToken({ chain, sender, receiver, token }) {
+  return jwt.sign({ chain, sender, receiver, token }, secret, {
     expiresIn: "1h"
   });
 }
@@ -76,8 +83,8 @@ exports.handler = async (event) => {
     };
   }
 
-  const { sender, receiver, token } = body;
-  const streams = await getStreams(sender, receiver, token);
+  const { chain = "goerli", sender, receiver, token } = body;
+  const streams = await getStreams({ chain, sender, receiver, token });
   if (!streams || streams.length === 0)
     return {
       statusCode: 401,
@@ -88,7 +95,7 @@ exports.handler = async (event) => {
     };
 
   // Generate JWT token if stream exists
-  const jwtToken = generateJwtToken(sender, receiver, token);
+  const jwtToken = generateJwtToken({ chain, sender, receiver, token });
 
   // 307 redirect to protected page with token
   // event.httpMethod = "GET";
