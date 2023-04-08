@@ -2,7 +2,7 @@
 
 Streamline your content access with Superfluid Stream Gating.
 
-### Abour Superfluid:
+### About Superfluid:
 
 Superfluid is a revolutionary asset streaming protocol that brings subscriptions, salaries, vesting, and rewards to DAOs and crypto-native businesses worldwide - https://www.superfluid.finance/
 
