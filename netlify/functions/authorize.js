@@ -4,13 +4,13 @@ const jwt = require("jsonwebtoken");
 const whitelistedApiKeys = process.env.WHITELISTED_API_KEYS
   ? process.env.WHITELISTED_API_KEYS.split(",")
   : [];
-const secret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET;
 const appUrl = process.env.APP_URL;
 
 const subgraphUrls = {
-  "goerli": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
-  "mumbai": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
-  "matic": "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-matic"
+  sepolia: "https://subgraph-endpoints.superfluid.dev/eth-sepolia/protocol-v1",
+  mainnet: "https://subgraph-endpoints.superfluid.dev/eth-mainnet/protocol-v1",
+  matic: "https://subgraph-endpoints.superfluid.dev/polygon-mainnet/protocol-v1"
 };
 
 // Check if the API key is authorized
@@ -18,7 +18,9 @@ const isApiKeyAuthorized = (apiKey) => whitelistedApiKeys.includes(apiKey);
 
 // Check if the request body has all the required parameters
 const isRequestBodyValid = (body) =>
-  ["sender", "receiver", "token"].every((param) => body.hasOwnProperty(param));
+  ["chain", "sender", "receiver", "token"].every((param) =>
+    body.hasOwnProperty(param)
+  );
 
 // Retrieve streams using the Superfluid subgraph
 async function getStreams({ chain, sender, receiver, token }) {
@@ -29,8 +31,8 @@ async function getStreams({ chain, sender, receiver, token }) {
       }
     }
   `;
-  // Get the subgraph URL based on the chain or fallback to goerli
-  const subgraphUrl = subgraphUrls[chain] || subgraphUrls["goerli"];
+  // Get the subgraph URL based on the chain
+  const subgraphUrl = subgraphUrls[chain];
   const { streams } = await request({
     url: subgraphUrl,
     document: STREAMS_QUERY,
@@ -49,7 +51,7 @@ async function getStreams({ chain, sender, receiver, token }) {
 
 // Generate a JWT token with an expiration time of 1 hour
 function generateJwtToken({ chain, sender, receiver, token }) {
-  return jwt.sign({ chain, sender, receiver, token }, secret, {
+  return jwt.sign({ chain, sender, receiver, token }, jwtSecret, {
     expiresIn: "1h"
   });
 }
@@ -83,7 +85,7 @@ exports.handler = async (event) => {
     };
   }
 
-  const { chain = "goerli", sender, receiver, token } = body;
+  const { chain, sender, receiver, token } = body;
   const streams = await getStreams({ chain, sender, receiver, token });
   if (!streams || streams.length === 0)
     return {
@@ -110,6 +112,9 @@ exports.handler = async (event) => {
   // or just return the token and redirectUrl
   return {
     statusCode: 200,
-    body: JSON.stringify({ token: jwtToken, redirectUrl: `${appUrl}?token=${jwtToken}` })
+    body: JSON.stringify({
+      token: jwtToken,
+      redirectUrl: `${appUrl}?token=${jwtToken}`
+    })
   };
 };

@@ -19,24 +19,23 @@ This function is built using the Netlify/AWS Lambda serverless architecture and 
 
 To deploy the Superfluid Stream Gating serverless function, you need to have a Netlify account. Follow these steps to deploy the function:
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Salmandabbakuti/superfluid-stream-gated-jwt#JWT_SECRET=somesupersecret&SUBGRAPH_URL=https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli&WHITELISTED_API_KEYS=api_key_1,api_key_2,api_key_3&APP_URL=https://superfluid-stream-gating.netlify.app/)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Salmandabbakuti/superfluid-stream-gated-jwt#JWT_SECRET=somesupersecret&WHITELISTED_API_KEYS=api_key_1,api_key_2,api_key_3&APP_URL=https://superfluid-stream-gating.netlify.app/)
 
 Click the button above to deploy the function to your Netlify account. Follow the instructions to deploy your function.
 
 Once the function is deployed, you need to update the following environment variables. You can do this by going to the `Site settings` tab of your Netlify site and clicking on `Environment Variables` > Select a variable > `Options` > `Edit`.
 
-```
+```.env
 JWT_SECRET=
 APP_URL=
-SUBGRAPH_URL=
 WHITELISTED_API_KEYS=api_key_1,api_key_2,api_key_3
 ```
 
-After updating the environment variables, you can access the function endpoint by going to the `Functions` tab of your Netlify site and clicking on the `superfluid-stream-gating` function.
+After updating the environment variables, you can access the function endpoint by going to the `Functions` tab of your Netlify site and clicking on the `authorize` function.
 
 ## Usage
 
-To use the Superfluid Stream Gating function [`superfluid-stream-gating.js`](netlify/functions/superfluid-stream-gating.js), you need to make a POST request to the deployed function endpoint with the following parameters in the request body:
+To use the Superfluid Stream Gating function [`authorize.js`](netlify/functions/authorize.js), you need to make a POST request to the deployed function endpoint with the following parameters in the request body:
 
 `sender`: the Ethereum address of the sender of the stream
 
@@ -44,25 +43,24 @@ To use the Superfluid Stream Gating function [`superfluid-stream-gating.js`](net
 
 `token`: the Ethereum address of the token being streamed
 
-`chain` (optional): The Ethereum network where the stream is taking place. Defaults to goerli if not provided. Possible values: `goerli`, `mumbai`, `matic`
+`chain`: The Ethereum network where the stream is taking place. Possible values: `sepolia`, `mainnet`, `matic`
 
-> Note: This project uses subgraph to verify the existence of the stream before authenticating access. You can specify `chain` in request body to use the subgraph of the specified chain. The supported chains are `goerli`, `mumbai`, `matic`. If no `chain` is specified, the function will use the `goerli` subgraph by default.
+> Note: This project uses subgraph to verify the existence of the stream before authenticating access. You can specify `chain` in request body to use the subgraph of the specified chain. The supported chains are `sepolia`, `mainnet`, `matic`.
 
 `x-api-key`: the API key in the request header
 
 Here is an example curl command for making a request:
 
 ```bash
-curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/superfluid-stream-gating \
+curl -X POST https://superfluid-stream-gating.netlify.app/.netlify/functions/authorize \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: zaLcG9' \
   -d '{
-    "chain": "goerli",
+    "chain": "sepolia",
     "sender": "0xc7203561ef179333005a9b81215092413ab86ae9",
-    "receiver": "0x7348943c8d263ea253c0541656c36b88becd77b9",
-    "token": "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
+    "receiver": "0xdc7c5b449d4417a5aa01bf53ad280b1bedf4b078",
+    "token": "0x9ce2062b085a2268e8d769ffc040f6692315fd2c"
   }'
-
 ```
 
 ## Roadmap:

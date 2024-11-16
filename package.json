@@ -10,10 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dayjs": "^1.11.7",
-    "graphql": "^16.6.0",
+    "dayjs": "^1.11.13",
+    "graphql": "^16.9.0",
     "graphql-request": "^5.2.0",
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "chai": "^4.3.7",
