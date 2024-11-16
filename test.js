@@ -66,6 +66,26 @@ describe("Superfluid stream gating function tests", () => {
     );
   });
 
+  it("should return a 500 error if given chain is not supported", async () => {
+    const event = {
+      httpMethod: "POST",
+      headers: {
+        "x-api-key": "apikey1"
+      },
+      body: JSON.stringify({
+        chain: "avalanche",
+        sender: "0xc1203561ef179333005a9b81215092413ab86ae9",
+        receiver: "0x6348943c8d263ea253c0541656c36b88becd77b9",
+        token: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00"
+      })
+    };
+    const response = await handler(event);
+    expect(response.statusCode).to.equal(500);
+    expect(JSON.parse(response.body).message).to.equal(
+      `Chain "avalanche" is not supported`
+    );
+  });
+
   it("should return a 200 response with token", async () => {
     const event = {
       httpMethod: "POST",

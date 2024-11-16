@@ -33,6 +33,9 @@ async function getStreams({ chain, sender, receiver, token }) {
   `;
   // Get the subgraph URL based on the chain
   const subgraphUrl = subgraphUrls[chain];
+  if (!subgraphUrl) {
+    throw new Error(`Chain "${chain}" is not supported`);
+  }
   const { streams } = await request({
     url: subgraphUrl,
     document: STREAMS_QUERY,
@@ -86,35 +89,45 @@ exports.handler = async (event) => {
   }
 
   const { chain, sender, receiver, token } = body;
-  const streams = await getStreams({ chain, sender, receiver, token });
-  if (!streams || streams.length === 0)
+  try {
+    const streams = await getStreams({ chain, sender, receiver, token });
+    if (!streams || streams.length === 0)
+      return {
+        statusCode: 401,
+        body: JSON.stringify({
+          code: "Unauthorized",
+          message: "No stream found to authorize!"
+        })
+      };
+
+    // Generate JWT token if stream exists
+    const jwtToken = generateJwtToken({ chain, sender, receiver, token });
+
+    // 307 redirect to protected page with token
+    // event.httpMethod = "GET";
+    // return {
+    //   statusCode: 307,
+    //   headers: {
+    //     Location: `${appUrl}?token=${jwtToken}`
+    //   },
+    //   body: ""
+    // };
+
+    // or just return the token and redirectUrl
     return {
-      statusCode: 401,
+      statusCode: 200,
       body: JSON.stringify({
-        code: "Unauthorized",
-        message: "No stream found to authorize!"
+        token: jwtToken,
+        redirectUrl: `${appUrl}?token=${jwtToken}`
       })
     };
-
-  // Generate JWT token if stream exists
-  const jwtToken = generateJwtToken({ chain, sender, receiver, token });
-
-  // 307 redirect to protected page with token
-  // event.httpMethod = "GET";
-  // return {
-  //   statusCode: 307,
-  //   headers: {
-  //     Location: `${appUrl}?token=${jwtToken}`
-  //   },
-  //   body: ""
-  // };
-
-  // or just return the token and redirectUrl
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      token: jwtToken,
-      redirectUrl: `${appUrl}?token=${jwtToken}`
-    })
-  };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        code: "Internal Server Error",
+        message: err.message
+      })
+    };
+  }
 };
